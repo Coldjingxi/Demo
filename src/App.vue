@@ -95,6 +95,7 @@ export default {
     },
     /* 添加 */
     add() {
+      this.formData = {}
       this.qualityDialogFlag = true;
       this.title = "添加";
     },
