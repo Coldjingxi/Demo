@@ -5,7 +5,7 @@
       :title="title"
       :visible.sync="visible"
       :close-on-click-modal="false"
-      @close="QualityDialogClose"
+      @close="qualityDialogClose"
     >
       <el-form
         label-width="80px"
@@ -38,7 +38,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="QualityDialogClose">取消</el-button>
+        <el-button size="small" @click="qualityDialogClose">取消</el-button>
         <el-button size="small" type="primary" @click="submitForm('editForm')"
           >保存</el-button
         >
@@ -52,21 +52,18 @@ export default {
   name: "Dialog",
   props: {
     /* 子组件不能直接操作父组件传递过来的参数 */
-    QualityDialogFlag: {
-      default: false,
-    },
+    qualityDialogFlag: Boolean,
     title: String,
     formData: Object,
   },
 
   watch: {
-    formData(newName, oldName) {
-      console.log(newName, oldName);
+    formData() {
       this.editForm = this.formData;
     },
     /* 监听变量赋值 子组件不能直接改变父组件参数 会报错 */
-    QualityDialogFlag() {
-      this.visible = this.QualityDialogFlag;
+    qualityDialogFlag() {
+      this.visible = this.qualityDialogFlag;
     },
   },
 
@@ -81,7 +78,6 @@ export default {
       rules: {
         sex: [{ required: true, message: "请输入性别", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-
         phone: [
           { required: true, message: "请输入手机号", trigger: "blur" },
           {
@@ -96,13 +92,21 @@ export default {
   },
   methods: {
     submitForm() {
-      
-        this.$emit("childByValue", this.editForm);
-      
-      
+      let that = this
+      this.$refs["editForm"].validate((valid) => {
+        
+        if (valid) {
+          // 请求方法
+           that.$emit("childByValue", this.editForm);
+          
+        } else {
+          return false;
+        }
+      });
+     
     },
-    QualityDialogClose() {
-      this.$emit("update:QualityDialogFlag", false);
+    qualityDialogClose() {
+      this.$emit("update:qualityDialogFlag", false);
     },
   },
 };

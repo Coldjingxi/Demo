@@ -1,22 +1,13 @@
 <template>
   <div class="hello">
-    <el-button size="mini" @click="Add()"
-      >增加</el-button
-    >
+    
     <el-table
       size="small"
-      :data="userData"
+      :data="tableValue"
       height="520"
       element-loading-text="拼命加载中"
       style="width: 100%"
-      :header-cell-style="{
-        'background-color': '#eee',
-        height: '1.56vw',
-        padding: '0',
-        border: 'none',
-        'font-size': '0.6vw',
-        color: '#000',
-      }"
+      :header-cell-style="headerStyle"
     >
       <el-table-column
         align="center"
@@ -45,70 +36,70 @@
 
       <el-table-column label="操作" min-width="400" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" >
+            编辑
+          </el-button>
+           
           <el-button
             size="mini"
             type="danger"
-            @click="deleteUser(scope.$index, scope.row)"
-            >删除</el-button
-          >
+            @click="deleteUser(scope.$index, scope.row)" >
+            删除
+          </el-button> 
+          
         </template>
       </el-table-column>
     </el-table>
     <!--sync必须加不然子组件监听不到  -->
-    <Dialog
-      :title="title"
-      :QualityDialogFlag.sync="QualityDialogFlag"
-      :formData.sync="formData"
-      @childByValue="childByValue"
-    ></Dialog>
+    
   </div>
 </template>
 
 <script>
-import Dialog from "../components/dialog.vue";
+
 export default {
   name: "Table",
   props: {
     userData: Array,
   },
-  components: { Dialog },
-
+  created(){
+    this.tableValue = this.userData;
+  },
+  watch: {
+    userData() {
+      this.tableValue = this.userData;
+    },
+  },
   data() {
     return {
-      QualityDialogFlag: false, //控制编辑页面显示与隐藏
-      title: "",
-      formData: {},
+      tableValue: [],
+      headerStyle:{
+        'background-color': '#eee',
+        height: '1.56vw',
+        padding: '0',
+        border: 'none',
+        'font-size': '0.6vw',
+        color: '#000',
+      }
     };
   },
   methods: {
-    Add(){
-      this.formData = {};
-      this.QualityDialogFlag = true;
-      this.title = "新增";
-    },
+    /* 编辑 */
     handleEdit(index, row) {
       console.log(index, row);
       /* 回显数据 */
-      this.formData = row;
-      this.QualityDialogFlag = true;
-      this.title = "编辑";
+      
+       this.$emit("editData",row);
     },
 
     /* 弹窗返回参数 */
-    childByValue(childValue) {
-      console.log(childValue);
-      if (this.title == "新增") {
-        this.userData.push(childValue)
-      }
-      this.QualityDialogFlag = false;
+    childByValue() {
+      
+      this.qualityDialogFlag = false;
     },
     /* 删除 */
-    deleteUser(index, row) {
-      console.log(index, row, "index");
-      this.userData = this.userData.splice(index, 1);
+    deleteUser(index) {
+      this.$emit("changeData",index);
     },
   },
 };
