@@ -10,7 +10,7 @@
 import Table from "../src/components/table.vue";
 export default {
   name: "App",
-  components: {Table},
+  components: { Table },
   data() {
     return {
       userData: [
@@ -18,21 +18,25 @@ export default {
           name: "王小虎",
           sex: "男",
           phone: "111111111111",
+          id: 1,
         },
         {
           name: "王小虎",
           sex: "男",
           phone: "111111111111",
+          id: 2,
         },
         {
           name: "王小虎",
           sex: "男",
           phone: "111111111111",
+          id: 3,
         },
         {
           name: "王小虎",
           sex: "男",
           phone: "111111111111",
+          id: 4,
         },
       ],
     };

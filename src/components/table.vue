@@ -1,14 +1,14 @@
 <template>
   <div class="hello">
-  <el-table
+    <el-button size="mini" @click="Add()"
+      >增加</el-button
+    >
+    <el-table
       size="small"
-      @selection-change="selectChange"
       :data="userData"
       height="520"
-      v-loading="loading"
       element-loading-text="拼命加载中"
       style="width: 100%"
-      :row-class-name="tableRowClassName"
       :header-cell-style="{
         'background-color': '#eee',
         height: '1.56vw',
@@ -23,7 +23,7 @@
         sortable
         prop="name"
         label="姓名"
-         min-width="200"
+        min-width="200"
       >
       </el-table-column>
       <el-table-column
@@ -31,7 +31,7 @@
         sortable
         prop="sex"
         label="性别"
-         min-width="200"
+        min-width="200"
       >
       </el-table-column>
       <el-table-column
@@ -48,9 +48,6 @@
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button
           >
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >增加</el-button
-          >
           <el-button
             size="mini"
             type="danger"
@@ -60,17 +57,61 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--sync必须加不然子组件监听不到  -->
+    <Dialog
+      :title="title"
+      :QualityDialogFlag.sync="QualityDialogFlag"
+      :formData.sync="formData"
+      @childByValue="childByValue"
+    ></Dialog>
   </div>
 </template>
 
 <script>
+import Dialog from "../components/dialog.vue";
 export default {
-  name: 'Table',
+  name: "Table",
   props: {
-    userData: Array
-  }
-  
-}
+    userData: Array,
+  },
+  components: { Dialog },
+
+  data() {
+    return {
+      QualityDialogFlag: false, //控制编辑页面显示与隐藏
+      title: "",
+      formData: {},
+    };
+  },
+  methods: {
+    Add(){
+      this.formData = {};
+      this.QualityDialogFlag = true;
+      this.title = "新增";
+    },
+    handleEdit(index, row) {
+      console.log(index, row);
+      /* 回显数据 */
+      this.formData = row;
+      this.QualityDialogFlag = true;
+      this.title = "编辑";
+    },
+
+    /* 弹窗返回参数 */
+    childByValue(childValue) {
+      console.log(childValue);
+      if (this.title == "新增") {
+        this.userData.push(childValue)
+      }
+      this.QualityDialogFlag = false;
+    },
+    /* 删除 */
+    deleteUser(index, row) {
+      console.log(index, row, "index");
+      this.userData = this.userData.splice(index, 1);
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
