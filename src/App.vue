@@ -67,19 +67,26 @@ export default {
     };
   },
   methods: {
+    /* 模糊搜所 */
+    fuzzyQuery(list, keyWord) {
+      var arr = [];
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].name.indexOf(keyWord) >= 0) {
+          arr.push(list[i]);
+        }
+      }
+      return arr;
+    },
+
     /* 搜索 */
     search() {
-      var cardNumArr = [];
-      //定义一个空的数组
-      var searchRow = {};
-      //定义一个空的对象
-
-      searchRow = this.userData.find(
-        (item) => item.name == this.searchValue
-      );
-      cardNumArr.push(searchRow);
       
-      this.userData = cardNumArr
+      if (this.searchValue) {
+        this.fuzzyQuery(this.userData,this.searchValue)
+        this.userData = this.fuzzyQuery(this.userData,this.searchValue);
+      } else {
+        return;
+      }
     },
     /* 编辑 */
     editData(row) {
@@ -95,7 +102,7 @@ export default {
     },
     /* 添加 */
     add() {
-      this.formData = {}
+      this.formData = {};
       this.qualityDialogFlag = true;
       this.title = "添加";
     },

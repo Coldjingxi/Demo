@@ -2,6 +2,7 @@
   <div>
     <!-- 编辑界面 -->
     <el-dialog
+      width="30%"
       :title="title"
       :visible.sync="visible"
       :close-on-click-modal="false"
@@ -10,6 +11,7 @@
       <el-form
         label-width="80px"
         ref="editForm"
+        :before-close="disableClose()"
         :model="editForm"
         :rules="rules"
       >
@@ -91,19 +93,23 @@ export default {
     };
   },
   methods: {
+    /* 弹窗关闭前关闭提示 */
+    disableClose() {
+      this.$nextTick(() => {
+        this.$refs["editForm"].clearValidate();
+      });
+    },
+
     submitForm() {
-      let that = this
+      let that = this;
       this.$refs["editForm"].validate((valid) => {
-        
         if (valid) {
           // 请求方法
-           that.$emit("childByValue", this.editForm);
-          
+          that.$emit("childByValue", this.editForm);
         } else {
           return false;
         }
       });
-     
     },
     qualityDialogClose() {
       this.$emit("update:qualityDialogFlag", false);

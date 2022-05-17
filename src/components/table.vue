@@ -99,7 +99,20 @@ export default {
     },
     /* 删除 */
     deleteUser(index) {
-      this.$emit("changeData",index);
+      this.$confirm(`确定要删除该数据吗？`, {
+                type: "warning",
+                //beforeClose 阻止关闭弹窗
+                beforeClose: (action, instance, done) => {
+                    //下面这行代码就是弹出的确认删除和取消删除
+                    if (action === "confirm") {
+                        this.$emit("changeData",index);
+                        done();
+                    } else {
+                        //点击其他地方时就相当于点击了false
+                        done();
+                    }
+                },
+            });
     },
   },
 };
